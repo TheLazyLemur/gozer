@@ -1,0 +1,14 @@
+@code {
+type ThemeBadge struct {
+	gozer.Base
+	Theme *Theme `cascade:""`
+}
+
+func (c *ThemeBadge) label() string {
+	if c.Theme.Dark {
+		return "dark theme"
+	}
+	return "light theme"
+}
+}
+<span class="badge">@c.label()</span>

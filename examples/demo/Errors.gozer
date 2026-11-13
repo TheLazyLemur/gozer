@@ -1,0 +1,21 @@
+@page "/errors"
+
+@code {
+type Errors struct {
+	gozer.Base
+	boundary *gozer.ErrorBoundary
+}
+}
+
+<PageTitle>Errors</PageTitle>
+<h1>Error boundaries</h1>
+<p>A panic inside the boundary replaces its content; the rest of the page keeps working.</p>
+<ErrorBoundary @ref="c.boundary">
+    <:ChildContent>
+        <Fragile />
+    </:ChildContent>
+    <:ErrorContent args="err error">
+        <p class="error">Caught: @err.Error()</p>
+        <button class="btn" @onclick="c.boundary.Recover">Recover</button>
+    </:ErrorContent>
+</ErrorBoundary>

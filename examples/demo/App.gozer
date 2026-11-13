@@ -1,0 +1,7 @@
+<Router DefaultLayout=@gozer.Factory[MainLayout]()>
+    <:NotFound>
+        <PageTitle>Not found</PageTitle>
+        <h1>Not found</h1>
+        <p>Sorry, there's nothing at this address.</p>
+    </:NotFound>
+</Router>

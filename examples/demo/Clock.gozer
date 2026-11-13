@@ -1,0 +1,30 @@
+@import "time"
+
+@code {
+type Clock struct {
+	gozer.Base
+	now  time.Time
+	stop chan struct{}
+}
+
+func (c *Clock) OnInit() {
+	c.now = time.Now()
+	c.stop = make(chan struct{})
+	go func() {
+		t := time.NewTicker(time.Second)
+		defer t.Stop()
+		for {
+			select {
+			case <-t.C:
+				c.InvokeAsync(func() { c.now = time.Now() })
+			case <-c.stop:
+				return
+			}
+		}
+	}()
+}
+
+func (c *Clock) Dispose() { close(c.stop) }
+}
+
+<p class="clock">Server time: <strong>@c.now.Format("15:04:05")</strong></p>

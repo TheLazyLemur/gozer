@@ -1,0 +1,9 @@
+<ul class="nav">
+    <li><NavLink Href="/" Match=@gozer.MatchAll>Home</NavLink></li>
+    <li><NavLink Href="/counter">Counter</NavLink></li>
+    <li><NavLink Href="/weather">Weather</NavLink></li>
+    <li><NavLink Href="/todo">Todo</NavLink></li>
+    <li><NavLink Href="/signup">Forms</NavLink></li>
+    <li><NavLink Href="/interop">JS interop</NavLink></li>
+    <li><NavLink Href="/errors">Errors</NavLink></li>
+</ul>

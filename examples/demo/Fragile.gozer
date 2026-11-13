@@ -1,0 +1,15 @@
+@code {
+type Fragile struct {
+	gozer.Base
+	clicks int
+}
+
+func (c *Fragile) click() {
+	c.clicks++
+	if c.clicks >= 3 {
+		panic("Fragile broke after 3 clicks")
+	}
+}
+}
+
+<p>Clicks: @c.clicks / 3 <button class="btn" @onclick="c.click">Click</button></p>

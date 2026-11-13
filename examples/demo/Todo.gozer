@@ -1,0 +1,69 @@
+@page "/todo"
+@import "context"
+@import "slices"
+@import "strings"
+
+@code {
+type Todo struct {
+	gozer.Base
+	items  []*todoItem
+	draft  string
+	nextID int
+	input  gozer.ElementRef
+}
+
+type todoItem struct {
+	ID    int
+	Title string
+	Done  bool
+}
+
+func (c *Todo) add() {
+	if strings.TrimSpace(c.draft) == "" {
+		return
+	}
+	c.nextID++
+	c.items = append(c.items, &todoItem{ID: c.nextID, Title: c.draft})
+	c.draft = ""
+}
+
+func (c *Todo) keydown(e gozer.Event) {
+	if e.Key == "Enter" {
+		c.add()
+	}
+}
+
+func (c *Todo) remove(id int) {
+	c.items = slices.DeleteFunc(c.items, func(t *todoItem) bool { return t.ID == id })
+}
+
+func (c *Todo) remaining() int {
+	n := 0
+	for _, it := range c.items {
+		if !it.Done {
+			n++
+		}
+	}
+	return n
+}
+
+func (c *Todo) OnAfterRender(first bool) {
+	if first {
+		c.input.Focus(context.Background())
+	}
+}
+}
+
+<PageTitle>Todo</PageTitle>
+<h1>Todo (@c.remaining() left)</h1>
+<ul class="todo">
+    @for _, it := range c.items {
+        <li @key="it.ID" class=@(map[bool]string{true: "done"}[it.Done])>
+            <input type="checkbox" @bind="it.Done" />
+            <span>@it.Title</span>
+            <button class="link" title="Remove" @onclick="func() { c.remove(it.ID) }">✕</button>
+        </li>
+    }
+</ul>
+<input placeholder="Something to do" @bind="c.draft" @bind:event="oninput" @onkeydown="c.keydown" @ref="c.input" />
+<button class="btn" @onclick="c.add">Add</button>

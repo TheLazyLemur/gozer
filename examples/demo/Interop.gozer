@@ -1,0 +1,69 @@
+@page "/interop"
+@import "context"
+@import "encoding/json"
+@import "strings"
+
+@code {
+type Interop struct {
+	gozer.Base
+	JS     *gozer.JSRuntime `inject:""`
+	width  int
+	stored string
+	fromJS string
+	box    gozer.ElementRef
+	err    error
+}
+
+func (c *Interop) OnInit() {
+	c.JS.Expose("shout", func(args []json.RawMessage) (any, error) {
+		var s string
+		if err := json.Unmarshal(args[0], &s); err != nil {
+			return nil, err
+		}
+		c.fromJS = strings.ToUpper(s)
+		c.StateHasChanged()
+		return c.fromJS, nil
+	})
+}
+
+func (c *Interop) Dispose() { c.JS.Unexpose("shout") }
+
+func (c *Interop) OnAfterRender(first bool) {
+	if !first {
+		return
+	}
+	ctx := context.Background()
+	c.err = c.JS.InvokeInto(ctx, &c.width, "demo.width")
+	if c.err == nil {
+		var s *string
+		c.err = c.JS.InvokeInto(ctx, &s, "localStorage.getItem", "gozer-demo")
+		if s != nil {
+			c.stored = *s
+		}
+	}
+	c.StateHasChanged()
+}
+
+func (c *Interop) save() {
+	c.err = c.JS.InvokeVoid(context.Background(), "localStorage.setItem", "gozer-demo", c.stored)
+}
+
+func (c *Interop) flash() { c.err = c.JS.InvokeVoid(context.Background(), "demo.flash", c.box) }
+}
+
+<PageTitle>JS interop</PageTitle>
+<h1>JS interop</h1>
+@if c.err != nil {
+    <p class="error">@c.err</p>
+}
+<p>Window width, read from JS after the first render: <strong>@c.width px</strong></p>
+<p>
+    <input @bind="c.stored" placeholder="Saved in localStorage" />
+    <button class="btn" @onclick="c.save">Save</button>
+</p>
+<div class="box" @ref="c.box">I am an ElementRef passed to JavaScript.</div>
+<button class="btn" @onclick="c.flash">Flash it from Go</button>
+<p>
+    <button class="btn" onclick="gozer.invoke('shout', 'hello from javascript')">Call Go from JS</button>
+    Go received: <strong id="shout">@c.fromJS</strong>
+</p>

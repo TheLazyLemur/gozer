@@ -1,0 +1,18 @@
+@code {
+// Grid is a generic templated component.
+type Grid[T any] struct {
+	gozer.Base
+	Items  []T
+	Header gozer.Node
+	Row    func(T) gozer.Node
+}
+}
+
+<table class="table">
+    <thead><tr>@c.Header</tr></thead>
+    <tbody>
+        @for _, it := range c.Items {
+            <tr>@c.Row(it)</tr>
+        }
+    </tbody>
+</table>

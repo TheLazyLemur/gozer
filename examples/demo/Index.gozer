@@ -1,0 +1,13 @@
+@page "/"
+
+<PageTitle>Home</PageTitle>
+<HeadContent>
+    <meta name="description" content="gozer: stateful server-side components for Go." />
+    <link rel="canonical" href="https://example.com/" />
+</HeadContent>
+
+<h1>Hello, gozer!</h1>
+<p>Stateful server-side components, rendered over a WebSocket, shipped as one Go binary.</p>
+<Clock />
+<h2>An embedded component with a parameter</h2>
+<Counter IncrementAmount=@5 />

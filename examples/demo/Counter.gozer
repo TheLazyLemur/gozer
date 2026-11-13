@@ -1,0 +1,25 @@
+@page "/counter"
+@page "/counter/{start:int}"
+
+@code {
+type Counter struct {
+	gozer.Base
+	Start           int
+	IncrementAmount int
+	count           int
+}
+
+func (c *Counter) OnInit() { c.count = c.Start }
+
+func (c *Counter) OnParametersSet() {
+	if c.IncrementAmount == 0 {
+		c.IncrementAmount = 1
+	}
+}
+
+func (c *Counter) increment() { c.count += c.IncrementAmount }
+}
+
+<h1>Counter</h1>
+<p role="status">Current count: @c.count</p>
+<button class="btn primary" @onclick="c.increment">Click me</button>

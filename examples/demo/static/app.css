@@ -1,0 +1,32 @@
+:root { --bg: #fafaf8; --fg: #1d1d1b; --muted: #6b6b66; --line: #e3e2dd; --accent: #2f5bd3; --side: #f0efea; }
+* { box-sizing: border-box; }
+body { margin: 0; font: 15px/1.5 system-ui, -apple-system, sans-serif; background: var(--bg); color: var(--fg); }
+.page { display: flex; min-height: 100vh; }
+.page.dark { --bg: #17181a; --fg: #ececea; --muted: #9a9a95; --line: #2c2d30; --side: #1f2023; --accent: #7aa2ff; background: var(--bg); color: var(--fg); }
+.sidebar { width: 210px; background: var(--side); border-right: 1px solid var(--line); padding: 1rem; }
+.brand { font-weight: 700; font-size: 1.2rem; margin-bottom: 1rem; }
+.nav { list-style: none; padding: 0; margin: 0; }
+.nav a { display: block; padding: .35rem .6rem; border-radius: .35rem; color: var(--fg); text-decoration: none; }
+.nav a.active { background: var(--accent); color: #fff; }
+main { flex: 1; min-width: 0; }
+.top-row { display: flex; gap: .75rem; justify-content: flex-end; align-items: center; padding: .6rem 1.5rem; border-bottom: 1px solid var(--line); }
+article { padding: 1.5rem; max-width: 760px; }
+.btn { font: inherit; padding: .35rem .8rem; border: 1px solid var(--line); background: var(--bg); color: var(--fg); border-radius: .35rem; cursor: pointer; }
+.btn.primary { background: var(--accent); border-color: var(--accent); color: #fff; }
+button.link { border: 0; background: none; color: var(--muted); cursor: pointer; }
+.badge { font-size: .8rem; color: var(--muted); }
+.table { border-collapse: collapse; width: 100%; }
+.table th, .table td { text-align: left; padding: .4rem .6rem; border-bottom: 1px solid var(--line); }
+.todo { padding: 0; list-style: none; }
+.todo li { display: flex; gap: .5rem; align-items: center; padding: .2rem 0; }
+.todo li.done span { text-decoration: line-through; color: var(--muted); }
+input, select, textarea { font: inherit; padding: .3rem .5rem; border: 1px solid var(--line); border-radius: .3rem; background: var(--bg); color: var(--fg); }
+.field { display: flex; flex-direction: column; gap: .2rem; margin-bottom: .8rem; max-width: 360px; }
+.field label:has(input[type=checkbox]) { display: flex; gap: .4rem; align-items: center; }
+.modified.valid { outline: 1px solid #26b050; }
+.invalid { outline: 1px solid #e04040; }
+.validation-message { color: #e04040; font-size: .85rem; }
+.validation-errors { padding-left: 1.2rem; }
+.ok { color: #1f8a43; }
+.error { color: #e04040; }
+.box { padding: 1rem; border: 1px dashed var(--line); margin: .8rem 0; }

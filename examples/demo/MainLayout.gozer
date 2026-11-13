@@ -1,0 +1,32 @@
+@code {
+type MainLayout struct {
+	gozer.LayoutBase
+	theme Theme
+}
+
+type Theme struct{ Dark bool }
+
+func (c *MainLayout) toggle() { c.theme.Dark = !c.theme.Dark }
+
+func (c *MainLayout) class() string {
+	if c.theme.Dark {
+		return "page dark"
+	}
+	return "page"
+}
+}
+<CascadingValue Value=@(&c.theme)>
+    <div class=@c.class()>
+        <nav class="sidebar">
+            <div class="brand">gozer</div>
+            <NavMenu />
+        </nav>
+        <main>
+            <div class="top-row">
+                <ThemeBadge />
+                <button class="btn" @onclick="c.toggle">Toggle theme</button>
+            </div>
+            <article>@c.Body</article>
+        </main>
+    </div>
+</CascadingValue>

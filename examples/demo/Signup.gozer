@@ -1,0 +1,82 @@
+@page "/signup"
+@import "fmt"
+@import "time"
+@import "github.com/TheLazyLemur/gozer/forms"
+
+@code {
+type Signup struct {
+	gozer.Base
+	model signupModel
+	saved string
+}
+
+type signupModel struct {
+	Name     string    `validate:"required,min=2,max=40"`
+	Email    string    `validate:"required,email" label:"E-mail"`
+	Age      int       `validate:"min=18,max=130"`
+	Plan     string    `validate:"required"`
+	Birthday time.Time `validate:"required"`
+	Bio      string    `validate:"max=200"`
+	Terms    bool      `validate:"required" label:"Accept terms"`
+}
+
+// Validate adds a model-specific rule on top of the struct tags.
+func (m *signupModel) Validate() map[string]string {
+	if m.Name == "admin" {
+		return map[string]string{"Name": "That name is reserved."}
+	}
+	return nil
+}
+
+func (c *Signup) save(ctx *forms.EditContext) {
+	c.saved = fmt.Sprintf("Welcome, %s (%s, %s plan)!", c.model.Name, c.model.Email, c.model.Plan)
+	c.model = signupModel{}
+}
+}
+
+<PageTitle>Forms</PageTitle>
+<h1>Sign up</h1>
+@if c.saved != "" {
+    <p class="ok">@c.saved</p>
+}
+<forms.EditForm Model=@(&c.model) OnValidSubmit=@c.save>
+    <forms.ValidationSummary />
+    <div class="field">
+        <label>Name</label>
+        <forms.InputText @bind-Value="c.model.Name" />
+        <forms.ValidationMessage For=@(&c.model.Name) />
+    </div>
+    <div class="field">
+        <label>E-mail</label>
+        <forms.InputText @bind-Value="c.model.Email" />
+        <forms.ValidationMessage For=@(&c.model.Email) />
+    </div>
+    <div class="field">
+        <label>Age</label>
+        <forms.InputNumber[int] @bind-Value="c.model.Age" />
+        <forms.ValidationMessage For=@(&c.model.Age) />
+    </div>
+    <div class="field">
+        <label>Plan</label>
+        <forms.InputSelect[string] @bind-Value="c.model.Plan">
+            <option value="">Choose…</option>
+            <option value="free">Free</option>
+            <option value="pro">Pro</option>
+        </forms.InputSelect[string]>
+        <forms.ValidationMessage For=@(&c.model.Plan) />
+    </div>
+    <div class="field">
+        <label>Birthday</label>
+        <forms.InputDate @bind-Value="c.model.Birthday" />
+        <forms.ValidationMessage For=@(&c.model.Birthday) />
+    </div>
+    <div class="field">
+        <label>Bio</label>
+        <forms.InputTextArea @bind-Value="c.model.Bio" />
+    </div>
+    <div class="field">
+        <label><forms.InputCheckbox @bind-Value="c.model.Terms" /> I accept the terms</label>
+        <forms.ValidationMessage For=@(&c.model.Terms) />
+    </div>
+    <button class="btn primary" type="submit">Sign up</button>
+</forms.EditForm>

@@ -1,0 +1,30 @@
+@page "/weather"
+
+@code {
+type Weather struct {
+	gozer.Base
+	Svc       *WeatherService `inject:""`
+	forecasts []Forecast
+}
+
+func (c *Weather) OnInit() {
+	go func() {
+		f := c.Svc.Forecasts(5)
+		c.InvokeAsync(func() { c.forecasts = f })
+	}()
+}
+}
+
+<PageTitle>Weather</PageTitle>
+<h1>Weather</h1>
+<p>Loaded on a background goroutine, then pushed to the browser.</p>
+@if c.forecasts == nil {
+    <p><em>Loading…</em></p>
+} else {
+    <Grid[Forecast] Items=@c.forecasts>
+        <:Header><th>Date</th><th>Temp. (C)</th><th>Temp. (F)</th><th>Summary</th></:Header>
+        <:Row args="f Forecast">
+            <td>@f.Date.Format("Mon 2 Jan")</td><td>@f.TempC</td><td>@f.TempF()</td><td>@f.Summary</td>
+        </:Row>
+    </Grid[Forecast]>
+}
